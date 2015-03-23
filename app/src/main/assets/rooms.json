@@ -1,14 +1,26 @@
 {
     "Rooms": [
                 {
-                    "Entrance":[
-                                "Dark":"When you look around you find yourself inside a dark room. Even with very little light you can see various objects lying around",
-                                "Lighted":"The room is lighted"
-                                ],
-                    "Main_Hallway":"You have entered the main hallway.",
-                    "Kitchen":"A simple kitchen with a white refrigerator",
-                    "Living_Room":"A simple living room area.",
-                    "Dining_Room":"A simple dining room with a table and chairs."
+                    "Entrance":[{
+                            "Dark":"When you look around you find yourself inside a dark room. Even with very little light you can see various objects lying around.",
+                            "Lighted":"When you look around you find yourself inside a small room. Not much to see here except a hallway directly in front of you."
+                        }],
+                    "Main_Hallway":[{
+                             "Dark":"Walking down the hall you can only smell the stench of something, the ground feels squishy.",
+                             "Lighted":"All over the ground you can see that the floor is carpeted and its drenched in liquid.Your feet start to feel wet."
+                       }],
+                    "Kitchen":[{
+                          "Dark":"Some of the dim light makes it's way through the nearby window",
+                          "Lighted":"With the light on you notice that you are in a kitchen."
+                      }],
+                    "Living_Room":[{
+                         "Dark":"There is a dim amount of light in here, it appears that you are standing in a large room, there are objects in here but you cant see what they are since its so dark.",
+                         "Lighted":"Upon more noticeable inspection you can see stains of blood covering a couch and a the nearby chair. They are plaid with fabric upholstery"
+                      }],
+                    "Dining_Room":[{
+                        "Dark":"Some of the light from the living room allows you to see some sort of visible circular object",
+                        "Lighted":"There are chairs that encompass a table. There are red stains on the table that seem to the remnants of dried blood."
+                      }]
                 }
              ]
 }

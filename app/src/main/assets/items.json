@@ -2,32 +2,46 @@
     "Items":
         [
             {
-                "Item_name":"Door",
-                "Item_type":"Furniture",
-                "Item_desc":"A strong wooden door",
-                "Damage":"0",
-                "Capacity":"0"
-            },
-            {
-                "Item_name":"Chair",
-                "Item_type":"Furniture",
-                "Item_desc":"A typical wooden chair",
-                "Damage":"0",
-                "Capacity":"1"
-            },
-            {
-                "Item_name":"Bat",
-                "Item_type":"Weapon",
-                "Item_desc":"A typical wooden bat used for baseball",
-                "Damage":"10",
-                "Capacity":"0"
-            },
-            {
-                "Item_name":"Table",
-                "Item_type":"Furniture",
-                "Item_desc":"A typical wooden dining room table",
-                "Damage":"0",
-                "Capacity":"0"
+                "Door":
+                [
+                    {
+                        "Item_name":"Door",
+                        "Item_type":"Furniture",
+                        "Item_desc":"A strong wooden door",
+                        "Damage":"0",
+                        "Capacity":"0"
+                    }
+                ],
+                "Chair":
+                [
+                    {
+                        "Item_name":"Chair",
+                        "Item_type":"Furniture",
+                        "Item_desc":"A typical wooden chair",
+                        "Damage":"0",
+                        "Capacity":"1"
+                    }
+                ],
+                "Table":
+                [
+                    {
+                        "Item_name":"Table",
+                        "Item_type":"Furniture",
+                        "Item_desc":"A typical wooden dining room table",
+                        "Damage":"0",
+                        "Capacity":"0"
+                    }
+                ],
+                "Light Switch":
+                [
+                    {
+                        "Item_name":"Light switch",
+                        "Item_type":"Furniture",
+                        "Item_desc":"A simple light switch",
+                        "Damage":"0",
+                        "Capacity":"0"
+                    }
+                ]
             }
         ]
 }

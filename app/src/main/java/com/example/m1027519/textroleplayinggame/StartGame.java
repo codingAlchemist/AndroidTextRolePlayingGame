@@ -143,13 +143,13 @@ public class StartGame extends Activity implements Runnable {
         initButtonActions();
 
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-               CustomAsyncTask enemyMoveTask = new CustomAsyncTask();
-               enemyMoveTask.execute();
-            }
-        },1000,5000);
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//               CustomAsyncTask enemyMoveTask = new CustomAsyncTask();
+//               enemyMoveTask.execute();
+//            }
+//        },1000,5000);
     }
     public String getGameInput(){
         return gameInput;
@@ -179,12 +179,17 @@ public class StartGame extends Activity implements Runnable {
 
     public void lookAround(){
         Room current = player.getCurrentRoom();
+        String status = current.isLighted() ? "isLighted" : "Not lighted";
+        Log.d("TAG","Current is "+ status);
         showUpdatedContent(current.getmDesc());
-        for (int i=0;i<current.getCharacters().size();i++){
-            showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
-        }
-        for(int i=0;i<current.getItems().size();i++){
-            showUpdatedContent(current.getItems().get(i).getItemName());
+        if (current.isLighted()){
+
+            for (int i=0;i<current.getCharacters().size();i++){
+                showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
+            }
+            for(int i=0;i<current.getItems().size();i++){
+                showUpdatedContent(current.getItems().get(i).getItemName());
+            }
         }
     }
     public void createMap(){
@@ -210,29 +215,12 @@ public class StartGame extends Activity implements Runnable {
         diningRoom.setLeftRoom(null);
     }
     public void initRooms(){
-
-        JSONObject roomDesc = null;
-        JSONObject lighted = null;
-        JSONObject dark = null;
-        try {
-            JSONObject obj = new JSONObject(loadJSONFromAsset(getApplicationContext(),"rooms.json"));
-            JSONArray jsonArray = obj.getJSONArray("Rooms");
-            for (int i=0; i < jsonArray.length(); i++){
-                roomDesc = jsonArray.getJSONObject(i);
-                entrance = new Room("Entrance", roomDesc.getString("Entrance"),0,false);
-
-                hallway = new Room("Hall Way",roomDesc.getString("Main_Hallway"),1,false);
-                kitchen = new Room("Kitchen", roomDesc.getString("Kitchen"),2,false);
-                livingRoom = new Room("Living Room", roomDesc.getString("Living_Room"),3,false);
-                diningRoom = new Room("Dining Room", roomDesc.getString("Dining_Room"),4,false);
-                diningRoom.setItems(furniture);
-            }
-
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-
-        createMap();
+        entrance = new Room("Entrance", "Entrance",0,false,getApplicationContext());
+        hallway = new Room("Hall Way","Main_Hallway",1,false,getApplicationContext());
+        kitchen = new Room("Kitchen", "Kitchen",2,false,getApplicationContext());
+        livingRoom = new Room("Living Room","Living_Room",3,false,getApplicationContext());
+        diningRoom = new Room("Dining Room","Dining_Room",4,false,getApplicationContext());
+        diningRoom.setItems(furniture);
 
         rooms.add(entrance);
         rooms.add(hallway);
@@ -240,14 +228,15 @@ public class StartGame extends Activity implements Runnable {
         rooms.add(livingRoom);
         rooms.add(diningRoom);
 
-        for(int i=0;i<initItems().size();i++){
-            if(initItems().get(i).isFurniture()){
-                furniture.add(initItems().get(i));
-            }else if(initItems().get(i).isWeapon()){
-                weapons.add(initItems().get(i));
-            }
-        }
-
+//        for(int i=0;i<initItems().size();i++){
+//            if(initItems().get(i).isFurniture()){
+//                furniture.add(initItems().get(i));
+//            }else if(initItems().get(i).isWeapon()){
+//                weapons.add(initItems().get(i));
+//            }
+//        }
+        Switch Light_switch = new Switch(false,getApplicationContext());
+        createMap();
         generateEnemies();
     }
     //Test room occupancy
@@ -262,22 +251,23 @@ public class StartGame extends Activity implements Runnable {
 
 
         ArrayList<Item> itemList = new ArrayList<Item>();
-        try{
-            JSONObject obj = new JSONObject(loadJSONFromAsset(getApplicationContext(),"items.json"));
-            JSONArray itemArray = obj.getJSONArray("Items");
-            for (int i=0; i < itemArray.length();i++){
-                JSONObject theItem = itemArray.getJSONObject(i);
-                String itemName = theItem.getString("Item_name");
-                String itemDesc = theItem.getString("Item_desc");
-                String itemType = theItem.getString("Item_type");
-                Integer damage = theItem.getInt("Damage");
-                Integer capacity = theItem.getInt("Capacity");
-                Item item = new Item(itemName,itemDesc,itemType,damage,capacity);
-                itemList.add(item);
-            }
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
+//        try{
+//            JSONObject obj = new JSONObject(loadJSONFromAsset(getApplicationContext(),"items.json"));
+//            JSONArray itemArray = obj.getJSONArray("Items");
+//            for (int i=0; i < itemArray.length();i++){
+//                JSONObject theItem = itemArray.getJSONObject(i);
+//                String itemName = theItem.getString("Item_name");
+//                String itemDesc = theItem.getString("Item_desc");
+//                String itemType = theItem.getString("Item_type");
+//                Integer damage = theItem.getInt("Damage");
+//                Integer capacity = theItem.getInt("Capacity");
+//                Item item = new Item(itemName,itemDesc,itemType,damage,capacity);
+//                itemList.add(item);
+//            }
+//        }catch (JSONException e){
+//            e.printStackTrace();
+//        }
+
         return itemList;
     }
 
@@ -352,7 +342,7 @@ public class StartGame extends Activity implements Runnable {
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
             if (!character.isEnemy()){
-                showUpdatedContent(character.getCurrentRoom().getmDesc());
+                lookAround();
             }
         }else{
             if (!character.isEnemy()){
@@ -373,7 +363,7 @@ public class StartGame extends Activity implements Runnable {
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
             if (!character.isEnemy()){
-                showUpdatedContent(character.getCurrentRoom().getmDesc());
+                lookAround();
             }
         }else{
             if (!character.isEnemy()){
@@ -393,7 +383,7 @@ public class StartGame extends Activity implements Runnable {
             character.setCurrentRoom(current.getNextRoom());
             current = character.getCurrentRoom();
             if (!character.isEnemy()){
-                showUpdatedContent(character.getCurrentRoom().getmDesc());
+                lookAround();
             }
             current.getCharacters().add(character);
         }else{
@@ -412,7 +402,7 @@ public class StartGame extends Activity implements Runnable {
             current.getCharacters().remove(character);
             character.setCurrentRoom(current.getPrevRoom());
             if (!character.isEnemy()){
-                showUpdatedContent(character.getCurrentRoom().getmDesc());
+                lookAround();
             }
 
             current = character.getCurrentRoom();
@@ -638,7 +628,6 @@ public class StartGame extends Activity implements Runnable {
         },200);
     }
     public void doActionFOrCommandString(String command){
-
         if (command.equalsIgnoreCase("look around")){
             lookAround();
         }
