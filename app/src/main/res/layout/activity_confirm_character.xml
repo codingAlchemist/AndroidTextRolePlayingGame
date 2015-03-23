@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.example.m1027519.textroleplayinggame.ConfirmCharacterActivity">
+
+    <TextView
+        android:id="@+id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_name_label"
+        android:layout_marginLeft="50dp"
+        style="@style/stat_text_style"/>
+
+    <TextView
+        android:id="@+id/character_name"
+        android:layout_toRightOf="@id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_name_placeholder"
+        style="@style/stat_text_style"/>
+    <TextView
+        android:id="@+id/mana_label"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_mana_label"
+        style="@style/stat_text_style"/>
+
+    <TextView
+        android:id="@+id/character_mana"
+        android:layout_below="@id/name_label"
+        android:layout_toRightOf="@id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_mana_placeholder"
+        style="@style/stat_text_style"/>
+
+    <TextView
+        android:id="@+id/hp_label"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/character_mana"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_hp_label"
+        style="@style/stat_text_style"/>
+
+    <TextView
+        android:id="@+id/character_hp"
+        android:layout_below="@id/character_mana"
+        android:layout_toRightOf="@id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/char_hp_placeholder"
+        style="@style/stat_text_style"/>
+
+    <RelativeLayout
+        android:id="@+id/stats_layout"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/character_mana"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light">
+
+        <LinearLayout
+            android:id="@+id/stats_label_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/stat_text_style"
+                android:text="Str" />
+
+            <TextView
+                style="@style/stat_text_style"
+                android:text="Int" />
+
+            <TextView
+                style="@style/stat_text_style"
+                android:text="Wis" />
+
+            <TextView
+                style="@style/stat_text_style"
+                android:text="Dex" />
+
+            <TextView
+                style="@style/stat_text_style"
+                android:text="Con" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/stats_value_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/stats_label_container"
+            android:layout_marginLeft="100dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/strength_stat"
+                style="@style/stat_text_style"
+                android:text="10" />
+
+            <TextView
+                android:id="@+id/intelligence_stat"
+                style="@style/stat_text_style"
+                android:text="10" />
+
+            <TextView
+                android:id="@+id/wisdom_stat"
+                style="@style/stat_text_style"
+                android:text="10" />
+
+            <TextView
+                android:id="@+id/dexterity_stat"
+                style="@style/stat_text_style"
+                android:text="10" />
+
+            <TextView
+                android:id="@+id/constitution_stat"
+                style="@style/stat_text_style"
+                android:text="10" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

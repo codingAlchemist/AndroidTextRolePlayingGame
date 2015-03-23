@@ -1,0 +1,14 @@
+{
+    "Rooms": [
+                {
+                    "Entrance":[
+                                "Dark":"When you look around you find yourself inside a dark room. Even with very little light you can see various objects lying around",
+                                "Lighted":"The room is lighted"
+                                ],
+                    "Main_Hallway":"You have entered the main hallway.",
+                    "Kitchen":"A simple kitchen with a white refrigerator",
+                    "Living_Room":"A simple living room area.",
+                    "Dining_Room":"A simple dining room with a table and chairs."
+                }
+             ]
+}

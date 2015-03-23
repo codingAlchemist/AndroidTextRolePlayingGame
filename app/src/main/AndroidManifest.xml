@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.m1027519.textroleplayinggame" >
+
+    <application
+        android:name="com.orm.SugarApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="Pickrand.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="5" />
+        <meta-data
+            android:name="DATABASE" android:value="game_data.db"/>
+        <meta-data
+            android:name="VERSION" android:value="1"/>
+
+        <activity
+            android:name=".CharacterCreateActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".StartGame"
+            android:label="@string/title_activity_start_game"
+            android:screenOrientation="portrait" >
+        </activity>
+
+    </application>
+
+</manifest>

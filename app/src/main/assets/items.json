@@ -1,0 +1,33 @@
+{
+    "Items":
+        [
+            {
+                "Item_name":"Door",
+                "Item_type":"Furniture",
+                "Item_desc":"A strong wooden door",
+                "Damage":"0",
+                "Capacity":"0"
+            },
+            {
+                "Item_name":"Chair",
+                "Item_type":"Furniture",
+                "Item_desc":"A typical wooden chair",
+                "Damage":"0",
+                "Capacity":"1"
+            },
+            {
+                "Item_name":"Bat",
+                "Item_type":"Weapon",
+                "Item_desc":"A typical wooden bat used for baseball",
+                "Damage":"10",
+                "Capacity":"0"
+            },
+            {
+                "Item_name":"Table",
+                "Item_type":"Furniture",
+                "Item_desc":"A typical wooden dining room table",
+                "Damage":"0",
+                "Capacity":"0"
+            }
+        ]
+}

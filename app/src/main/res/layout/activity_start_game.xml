@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.m1027519.textroleplayinggame.StartGame">
+
+    <include android:id="@+id/game_log_id"
+        layout="@layout/game_log"/>
+
+    <EditText
+        android:id="@+id/game_input_field"
+        android:background="@drawable/custom_edit_text"
+        android:paddingLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/game_log_id"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:maxLines="1"
+        android:singleLine="true"/>
+
+    <RelativeLayout
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/game_input_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_edit_text">
+        <Button
+
+            android:id="@+id/forward_button"
+            android:background="@drawable/nav_button"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="100dp"/>
+        <Button
+            android:layout_below="@+id/forward_button"
+            android:layout_alignLeft="@+id/forward_button"
+            android:id="@+id/right_button"
+            android:background="@drawable/nav_button"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="10dp"
+            android:rotation="90"
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
+        <Button
+            android:layout_below="@+id/right_button"
+            android:id="@+id/back_button"
+            android:layout_alignLeft="@+id/forward_button"
+            android:layout_marginTop="20dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:rotation="180"
+            android:background="@drawable/nav_button"/>
+        <Button
+            android:id="@+id/left_button"
+            android:layout_marginTop="10dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:rotation="-90"
+            android:background="@drawable/nav_button"
+            android:layout_below="@+id/forward_button"/>
+
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/action_button_table"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/game_input_field"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <Button
+                android:id="@+id/hitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hit_button_label"/>
+            <Button
+                android:id="@+id/lookButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/look_button_label"/>
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>

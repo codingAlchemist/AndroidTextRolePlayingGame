@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TextRolePlayingGame</string>
+    <string name="action_settings">Settings</string>
+    <string name="player_class_spinner_label">Please select a player class</string>
+    <string name="pick_character_name_label">Please enter a name</string>
+
+    <string-array name="player_classes">
+        <item>Fighter</item>
+        <item>Druid</item>
+        <item>Mage</item>
+    </string-array>
+
+    <string name="title_activity_confirm_character">ConfirmCharacterActivity</string>
+    <string name="title_activity_start_game">StartGame</string>
+    <string name="title_activity_combat">Combat</string>
+    <string name="char_name_label">Character Name: </string>
+    <string name="char_name_placeholder">Name</string>
+    <string name="char_hp_label">Hit Points: </string>
+    <string name="char_hp_placeholder">HP</string>
+    <string name="char_mana_label">Mana Points: </string>
+    <string name="char_mana_placeholder">Mana</string>
+    <string name="hit_button_label">Hit</string>
+    <string name="look_button_label">Look</string>
+
+</resources>
