@@ -31,7 +31,7 @@ import models.Character;
 
 public class ConfirmCharacterActivity extends DialogFragment {
     private TextView mCharacterName;
-    private final String TAG = "ConfirmCharacterActivity:";
+    private final String TAG = "ConfirmCharacter:";
     private Intent intent;
     private Button startGameButton;
     private String name;
@@ -44,6 +44,7 @@ public class ConfirmCharacterActivity extends DialogFragment {
     private int constitution;
     private int hp;
     private int mana;
+    private int level;
 
     public ConfirmCharacterActivity newInstance(){
         ConfirmCharacterActivity df = new ConfirmCharacterActivity();
@@ -58,7 +59,7 @@ public class ConfirmCharacterActivity extends DialogFragment {
         args.putInt("con", constitution);
         args.putInt("hp",hp);
         args.putInt("mana",mana);
-
+        args.putInt("lev", level);
 
         df.setArguments(args);
         return df;
@@ -101,7 +102,7 @@ public class ConfirmCharacterActivity extends DialogFragment {
         Bundle bundle = getArguments();
         name = bundle.getString("char_name");
         profession = bundle.getString("char_class");
-
+        level = bundle.getInt("lev");
         intelligence = bundle.getInt("int");
         wisdom = bundle.getInt("wis");
         strength = bundle.getInt("str");
@@ -110,17 +111,18 @@ public class ConfirmCharacterActivity extends DialogFragment {
 
         hp = bundle.getInt("hp");
         mana = bundle.getInt("mana");
-        character = new Character(name,
+        character = new Character(
+                name,
+                level,
                 strength,
                 intelligence,
                 dexterity,
                 wisdom,
                 constitution,
-                profession,
-                hp,
-                mana,false);
+                profession);
         TextView name_field = (TextView)view.findViewById(R.id.character_name);
         name_field.setText(name);
+
         TextView mana_field = (TextView)view.findViewById(R.id.character_mana);
         TextView hp_field = (TextView)view.findViewById(R.id.character_hp);
 

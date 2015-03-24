@@ -9,15 +9,12 @@ public class Switch extends Item {
     private boolean on;
     private Context mContext;
     public Switch(boolean on, Context context) {
-        super(0,0,context);
+        super("Light Switch",0,0,context);
         this.mContext = context;
         this.on = on;
-
-
-
     }
 
-    public boolean isOn() {
+    public boolean getIsOn() {
         return on;
     }
 

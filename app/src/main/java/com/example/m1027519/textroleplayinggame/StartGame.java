@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -19,14 +18,10 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,21 +33,19 @@ import models.*;
 import models.Character;
 
 
-public class StartGame extends Activity implements Runnable {
-
-    TextView gameOutput;
-    ArrayList<Room> rooms;
-    ArrayList<Item> furniture;
-    ArrayList<Item> weapons;
-    String name;
-    String profession;
+public class StartGame extends Activity {
+    private ScrollView gameOutputScroller;
+    private TextView gameOutput;
+    private ArrayList<Item> weapons;
+    private String name;
+    private String profession;
     private int intelligence;
     private int wisdom;
     private int strength;
     private int dexterity;
     private int constitution;
-    int hp;
-    int mana;
+    private int hp;
+    private int mana;
 
     private Timer timer;
     static final String TAG = StartGame.class.getSimpleName();
@@ -69,26 +62,23 @@ public class StartGame extends Activity implements Runnable {
     private String prevEnemy2Room;
     private String inputCommandText;
     int scroll_amount = 0;
-    HashMap combatHits;
+    private HashMap combatHits;
 
-    Room entrance;
-    Room hallway;
-    Room kitchen;
-    Room livingRoom;
-    Room diningRoom;
+    private Room entrance;
+    private Room hallway;
+    private Room kitchen;
+    private Room livingRoom;
+    private Room diningRoom;
 
-    Handler handler;
-    Character enemy;
-    Character player;
-    Character enemy2;
+    private Handler handler;
+    private Enemy enemy;
+    private Character player;
+    private Enemy enemy2;
 
     private String gameInput;
+    private Switch Light_switch;
 
-    //Enemy enemy;
-    @Override
-    public void run() {
 
-    }
 
     public static enum HitPhrases{
         MISS,
@@ -122,9 +112,8 @@ public class StartGame extends Activity implements Runnable {
             mana = list.get(i).getMana();
         }
 
-        rooms = new ArrayList<Room>();
-        furniture = new ArrayList<Item>();
         weapons = new ArrayList<Item>();
+        gameOutputScroller = (ScrollView)findViewById(R.id.game_log_scroller);
 
         gameInputField = (EditText)findViewById(R.id.game_input_field);
         gameInputField.setText("");
@@ -136,7 +125,7 @@ public class StartGame extends Activity implements Runnable {
         gameOutput.setText("Welcome " + name + ".\n" + "You are going to help me tell my story." + "\n" + entrance.getmDesc());
 
         //Create character and set the starting room
-        player = new Character(name,constitution,intelligence,wisdom,strength,dexterity,profession,hp,mana,false);//get args from bundle
+        player = new Character(name,1,constitution,intelligence,wisdom,strength,dexterity,profession);//get args from bundle
         player.setCurrentRoom(entrance);
         player.getCurrentRoom().getCharacters().add(player);
 
@@ -151,6 +140,11 @@ public class StartGame extends Activity implements Runnable {
 //            }
 //        },1000,5000);
     }
+
+    /**
+     *
+     * @return
+     */
     public String getGameInput(){
         return gameInput;
     }
@@ -160,30 +154,15 @@ public class StartGame extends Activity implements Runnable {
         timer.cancel();
     }
 
-    public String loadJSONFromAsset(Context context,String jsonFile){
-        String json = null;
-        try{
-            InputStream is = context.getAssets().open(jsonFile);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
+    /**
+     *
+     */
     public void lookAround(){
         Room current = player.getCurrentRoom();
         String status = current.isLighted() ? "isLighted" : "Not lighted";
         Log.d("TAG","Current is "+ status);
         showUpdatedContent(current.getmDesc());
         if (current.isLighted()){
-
             for (int i=0;i<current.getCharacters().size();i++){
                 showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
             }
@@ -191,7 +170,19 @@ public class StartGame extends Activity implements Runnable {
                 showUpdatedContent(current.getItems().get(i).getItemName());
             }
         }
+        for (int i=0; i < current.getItems().size();i++){
+            if (current.getItems().get(i).equals(Light_switch)){
+                Switch theSwitch = (Switch)current.getItems().get(i);
+                String switchState = theSwitch.getIsOn()?"on":"off";
+                showUpdatedContent("There is a light switch here and it is "+switchState);
+            }
+        }
+        showEnemies();
     }
+
+    /**
+     *
+     */
     public void createMap(){
         entrance.setNextRoom(hallway);
         entrance.setPrevRoom(null);
@@ -214,68 +205,34 @@ public class StartGame extends Activity implements Runnable {
         diningRoom.setNextRoom(null);
         diningRoom.setLeftRoom(null);
     }
+
+    /**
+     *
+     */
     public void initRooms(){
+        Light_switch = new Switch(false,getApplicationContext());
         entrance = new Room("Entrance", "Entrance",0,false,getApplicationContext());
+        entrance.getItems().add(Light_switch);
         hallway = new Room("Hall Way","Main_Hallway",1,false,getApplicationContext());
         kitchen = new Room("Kitchen", "Kitchen",2,false,getApplicationContext());
         livingRoom = new Room("Living Room","Living_Room",3,false,getApplicationContext());
         diningRoom = new Room("Dining Room","Dining_Room",4,false,getApplicationContext());
-        diningRoom.setItems(furniture);
-
-        rooms.add(entrance);
-        rooms.add(hallway);
-        rooms.add(kitchen);
-        rooms.add(livingRoom);
-        rooms.add(diningRoom);
-
-//        for(int i=0;i<initItems().size();i++){
-//            if(initItems().get(i).isFurniture()){
-//                furniture.add(initItems().get(i));
-//            }else if(initItems().get(i).isWeapon()){
-//                weapons.add(initItems().get(i));
-//            }
-//        }
-        Switch Light_switch = new Switch(false,getApplicationContext());
         createMap();
         generateEnemies();
     }
-    //Test room occupancy
-    public void testRoomCharCount(){
-        Log.d(TAG,"\n");
-        for(int i=0; i < rooms.size();i++){
-           Log.d(TAG,"Room "+rooms.get(i).getmTitle()+" has "+rooms.get(i).getCharacters().size()+" chars");
-        }
-    }
-
-    public ArrayList<Item> initItems(){
 
 
-        ArrayList<Item> itemList = new ArrayList<Item>();
-//        try{
-//            JSONObject obj = new JSONObject(loadJSONFromAsset(getApplicationContext(),"items.json"));
-//            JSONArray itemArray = obj.getJSONArray("Items");
-//            for (int i=0; i < itemArray.length();i++){
-//                JSONObject theItem = itemArray.getJSONObject(i);
-//                String itemName = theItem.getString("Item_name");
-//                String itemDesc = theItem.getString("Item_desc");
-//                String itemType = theItem.getString("Item_type");
-//                Integer damage = theItem.getInt("Damage");
-//                Integer capacity = theItem.getInt("Capacity");
-//                Item item = new Item(itemName,itemDesc,itemType,damage,capacity);
-//                itemList.add(item);
-//            }
-//        }catch (JSONException e){
-//            e.printStackTrace();
-//        }
-
-        return itemList;
-    }
-
+    /**
+     *
+     */
     private void dismissKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
+    /**
+     *
+     */
     public void initButtonActions(){
         forwardButton = (Button)findViewById(R.id.forward_button);
         forwardButton.setOnClickListener(new View.OnClickListener() {
@@ -334,6 +291,10 @@ public class StartGame extends Activity implements Runnable {
         });
     }
 
+    /**
+     *
+     * @param character
+     */
     public void navigateCharacterLeft(Character character){
         Room current = character.getCurrentRoom();
         if (current.getLeftRoom()!=null){
@@ -341,20 +302,16 @@ public class StartGame extends Activity implements Runnable {
             character.setCurrentRoom(current.getLeftRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
-            if (!character.isEnemy()){
-                lookAround();
-            }
+            lookAround();
         }else{
-            if (!character.isEnemy()){
-                showEndOfRooms();
-            }
+            lookAround();
+            showEndOfRooms();
         }
-        if (!character.isEnemy()){
-            showEnemies();
-        }
-        testRoomCharCount();
     }
-
+    /**
+     *
+     * @param character
+     */
     public void navigateCharacterRight(Character character){
         Room current = character.getCurrentRoom();
         if (current.getRightRoom()!=null){
@@ -362,74 +319,55 @@ public class StartGame extends Activity implements Runnable {
             character.setCurrentRoom(current.getRightRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
-            if (!character.isEnemy()){
-                lookAround();
-            }
+            lookAround();
         }else{
-            if (!character.isEnemy()){
-                showEndOfRooms();
-            }
+            lookAround();
+            showEndOfRooms();
         }
-        if (!character.isEnemy()){
-            showEnemies();
-        }
-        testRoomCharCount();
     }
 
+    /**
+     *
+     * @param character
+     */
     public void navigateCharacterForward(Character character){
         Room current = character.getCurrentRoom();
         if (current.getNextRoom()!=null){
             current.getCharacters().remove(character);
             character.setCurrentRoom(current.getNextRoom());
             current = character.getCurrentRoom();
-            if (!character.isEnemy()){
-                lookAround();
-            }
             current.getCharacters().add(character);
+            lookAround();
         }else{
-            if (!character.isEnemy()){
-                showEndOfRooms();
-            }
+            lookAround();
+            showEndOfRooms();
         }
-        if (!character.isEnemy()){
-            showEnemies();
-        }
-        testRoomCharCount();
     }
+
+    /**
+     *
+     * @param character
+     */
     public void navigateCharacterBack(Character character){
         Room current = character.getCurrentRoom();
         if (current.getPrevRoom()!=null){
             current.getCharacters().remove(character);
             character.setCurrentRoom(current.getPrevRoom());
-            if (!character.isEnemy()){
-                lookAround();
-            }
-
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
+            lookAround();
         }else{
-            if (!character.isEnemy()){
-                showEndOfRooms();
-            }
-
+            lookAround();
+            showEndOfRooms();
         }
-        if (!character.isEnemy()){
-            showEnemies();
-        }
-       testRoomCharCount();
     }
 
+
+    /**
+     *
+     */
     public void showEndOfRooms(){
         showUpdatedContent("You see a wall.");
-    }
-
-    public void showEnemies(){
-        Room current = player.getCurrentRoom();
-        for (int i=0;i<current.getCharacters().size();i++){
-            if (current.getCharacters().get(i).isEnemy()){
-                showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
-            }
-        }
     }
 
     @Override
@@ -458,27 +396,42 @@ public class StartGame extends Activity implements Runnable {
         super.onStart();
     }
 
+    /**
+     *
+     * @param content
+     */
     public void showUpdatedContent(String content){
-        gameOutput.setMovementMethod(new ScrollingMovementMethod());
         gameOutput.setText(gameOutput.getText() + "\n" + content);
+        gameOutputScroller.post(new Runnable() {
+            @Override
+            public void run() {
+                gameOutputScroller.fullScroll(View.FOCUS_DOWN);
+            }
+        });
 
-        if (gameOutput.getLineCount() > 11){
-            scroll_amount = scroll_amount + gameOutput.getLineHeight();
-            gameOutput.scrollTo(0,scroll_amount);
-        }
     }
 
+    /**
+     *
+     */
     public void generateEnemies(){
-        enemy = new Character("BadGuy",10,10,10,10,10,"",100,100,true);
-        enemy2 = new Character("BadGuy2",10,10,10,10,10,"",100,100,true);
+        enemy = new Enemy("BadGuy",1,10,10,10,10,10,"BadGuyClass");
+        enemy2 = new Enemy("BadGuy2",1,10,10,10,10,10,"BadBuyClass");
 
         enemy.setCurrentRoom(hallway);
         enemy2.setCurrentRoom(kitchen);
 
-        hallway.getCharacters().add(enemy);
-        kitchen.getCharacters().add(enemy2);
+        hallway.getEnemies().add(enemy);
+        kitchen.getEnemies().add(enemy2);
 
     }
+
+    /**
+     *
+     * @param rollHit
+     * @param player
+     * @param target
+     */
     public void doEmemyHit(int rollHit, Character player, Character target){
         switch(rollHit){
             case 0:
@@ -512,6 +465,80 @@ public class StartGame extends Activity implements Runnable {
                 break;
         }
     }
+    /**
+     *
+     * @param the_enemy
+     */
+    public void navigateEnemyLeft(Enemy the_enemy){
+        Room room = the_enemy.getCurrentRoom();
+        if (room.getLeftRoom() != null){
+            room.getEnemies().remove(enemy);
+            the_enemy.setCurrentRoom(room.getLeftRoom());
+            room = the_enemy.getCurrentRoom();
+            room.getEnemies().add(the_enemy);
+        }
+    }
+    /**
+     *
+     * @param the_enemy
+     */
+    public void navigateEnemyRight(Enemy the_enemy){
+        Room room = the_enemy.getCurrentRoom();
+        if (room.getRightRoom() != null){
+            room.getEnemies().remove(enemy);
+            the_enemy.setCurrentRoom(room.getRightRoom());
+            room = the_enemy.getCurrentRoom();
+            room.getEnemies().add(the_enemy);
+        }
+    }
+    /**
+     *
+     * @param the_enemy
+     */
+    public void navigateEnemyForward(Enemy the_enemy){
+        Room room = the_enemy.getCurrentRoom();
+        if (room.getNextRoom() != null){
+            room.getEnemies().remove(enemy);
+            the_enemy.setCurrentRoom(room.getNextRoom());
+            room = the_enemy.getCurrentRoom();
+            room.getEnemies().add(the_enemy);
+        }
+    }
+    /**
+     *
+     * @param the_enemy
+     */
+    public void navigateEnemyBack(Enemy the_enemy){
+        Room room = the_enemy.getCurrentRoom();
+        if (room.getPrevRoom() != null){
+            room.getEnemies().remove(the_enemy);
+            the_enemy.setCurrentRoom(room.getPrevRoom());
+            room = the_enemy.getCurrentRoom();
+            room.getEnemies().add(the_enemy);
+        }
+    }
+
+    /**
+     *
+     */
+    public void showEnemies(){
+        Room current = player.getCurrentRoom();
+        if (current.getEnemies().size() > 0){
+            hitButton.setVisibility(View.VISIBLE);
+            for (int i=0; i < current.getEnemies().size(); i++){
+                showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
+            }
+        }else{
+            hitButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     *
+     * @param rollHit
+     * @param target
+     * @return
+     */
     public HitPhrases doHit(int rollHit, Character target){
         HitPhrases hitPhrase = HitPhrases.values()[rollHit];
         switch (hitPhrase){
@@ -548,6 +575,11 @@ public class StartGame extends Activity implements Runnable {
         }
         return hitPhrase;
     }
+
+    /**
+     *
+     * @return
+     */
     private String randomizeNPCActions(){
         Random randomAction = new Random();
         String actionString="";
@@ -565,26 +597,36 @@ public class StartGame extends Activity implements Runnable {
         }
         return actionString;
     }
-    private void startEnemyNavigationLogic(Character enemy){
+
+    /**
+     *
+     * @param the_enemy
+     */
+    private void startEnemyNavigationLogic(Enemy the_enemy){
         Random randomDir = new Random();
         int enemyDir = randomDir.nextInt(4-0);
         if (!enemy.isDead()){
             switch (enemyDir){
                 case 0:
-                    navigateCharacterForward(enemy);
+                    navigateEnemyForward(the_enemy);
                     break;
                 case 1:
-                    navigateCharacterBack(enemy);
+                    navigateEnemyBack(the_enemy);
                     break;
                 case 2:
-                    navigateCharacterRight(enemy);
+                    navigateEnemyRight(the_enemy);
                     break;
                 case 3:
-                    navigateCharacterLeft(enemy);
+                    navigateEnemyLeft(the_enemy);
                     break;
             }
         }
     }
+
+    /**
+     *
+     * @param character
+     */
     public void showEnemymovement(Character character){
         Log.d(TAG,character.getName()+" is in "+character.getCurrentRoom().getmTitle());
         if (!character.getCurrentRoom().getmTitle().equalsIgnoreCase(prevEnemyRoom) && player.getCurrentRoom().getmTitle().equalsIgnoreCase(prevEnemyRoom)){
@@ -598,11 +640,20 @@ public class StartGame extends Activity implements Runnable {
         }
 
     }
+
+    /**
+     *
+     */
     public void displayHPandMana(){
-        showUpdatedContent(enemy.getName()+ " HP: " + enemy.getHitpts());
+        showUpdatedContent(enemy.getName() + " HP: " + enemy.getHitpts());
         showUpdatedContent("Your HP:" + player.getHitpts());
         showUpdatedContent("Your Mana:"+player.getMana());
     }
+
+    /**
+     *
+     * @param target
+     */
     public void doCombat(final Character target){
         showUpdatedContent("You swing at " + target.getName());
         Random random = new Random();
@@ -623,15 +674,26 @@ public class StartGame extends Activity implements Runnable {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-               doEmemyHit(enemyDice,player,target);
+                doEmemyHit(enemyDice, player, target);
             }
-        },200);
+        }, 200);
     }
+
+    /**
+     *
+     * @param command
+     */
     public void doActionFOrCommandString(String command){
         if (command.equalsIgnoreCase("look around")){
             lookAround();
         }
+        Room current = player.getCurrentRoom();
+
     }
+
+    /**
+     *
+     */
     private class CustomAsyncTask extends AsyncTask<Void,Void,Void>{
 
         boolean containsEnemy;

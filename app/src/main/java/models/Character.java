@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Character extends SugarRecord<Character>{
 
     private String name;
-    private int level;
     private String playerClass;
     private int exp;
     private boolean isFighter;
@@ -29,11 +28,10 @@ public class Character extends SugarRecord<Character>{
     private Integer hitpts;
     private Room currentRoom;
     private ArrayList<Item> itemsInInv;
-
-    public Character(String nameIn, Integer strengthIn, Integer intelligenceIn,Integer dexterityIn, Integer wisdomIn, Integer constitutionIn, String playerClassIn,Integer hpIn,Integer manaIn,boolean isEnemyIn){
+    private Integer level;
+    public Character(String nameIn, Integer levelIn, Integer strengthIn, Integer intelligenceIn, Integer dexterityIn, Integer wisdomIn, Integer constitutionIn,String playerClassIn){
         super();
         name = nameIn;
-
         strength = strengthIn;
         dexterity = dexterityIn;
         intelligence = intelligenceIn;
@@ -42,12 +40,12 @@ public class Character extends SugarRecord<Character>{
 
         playerClass = playerClassIn;
 
-        mana = manaIn;
-        hitpts = hpIn;
-
-        isEnemy = isEnemyIn;
+        level = levelIn;
         isDead = false;
         inCombat = false;
+
+        hitpts = (constitution *10) + strength + level;
+        mana = (intelligence * 10) + wisdom + level;
 
         itemsInInv = new ArrayList<Item>();
     }
@@ -128,14 +126,6 @@ public class Character extends SugarRecord<Character>{
         this.mana = mana;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
     public int getExp() {
         return exp;
     }
@@ -182,5 +172,37 @@ public class Character extends SugarRecord<Character>{
 
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
+    }
+
+    public boolean isFighter() {
+        return isFighter;
+    }
+
+    public void setFighter(boolean isFighter) {
+        this.isFighter = isFighter;
+    }
+
+    public boolean isMage() {
+        return isMage;
+    }
+
+    public void setMage(boolean isMage) {
+        this.isMage = isMage;
+    }
+
+    public boolean isDruid() {
+        return isDruid;
+    }
+
+    public void setDruid(boolean isDruid) {
+        this.isDruid = isDruid;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

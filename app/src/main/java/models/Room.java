@@ -19,10 +19,12 @@ import java.util.ArrayList;
 public class Room extends SugarRecord<Room>{
     private ArrayList<Item> items;
     private ArrayList<Character> characters;
+    private ArrayList<Enemy> enemies;
     private String mDesc;
     private String mTitle;
     private int roomID;
     private boolean isLighted;
+    private boolean hasLightSwitch;
     private String mRoomIsLightedDesc;
     private String mRoomIsDarkDesc;
     private Room leftRoom;
@@ -38,7 +40,9 @@ public class Room extends SugarRecord<Room>{
         this.roomID = roomIDIn;
         this.isLighted = isLightedIn;
         this.characters = new ArrayList<Character>();
+        this.enemies = new ArrayList<Enemy>();
         this.items = new ArrayList<Item>();
+        this.hasLightSwitch = false;
         JSONObject roomDesc;
         try {
             JSONObject obj = new JSONObject(loadJSONFromAsset(mContext,"rooms.json"));
@@ -51,7 +55,6 @@ public class Room extends SugarRecord<Room>{
         }catch (JSONException e){
             e.printStackTrace();
         }
-
     }
     public String loadJSONFromAsset(Context context,String jsonFile){
         String json = null;
@@ -125,11 +128,13 @@ public class Room extends SugarRecord<Room>{
     }
 
     public ArrayList<Item> getItems() {
+
         return items;
     }
 
     public void setItems(ArrayList<Item> items) {
         this.items = items;
+
     }
 
     public ArrayList<Character> getCharacters() {
@@ -138,6 +143,14 @@ public class Room extends SugarRecord<Room>{
 
     public void setCharacters(ArrayList<Character> characters) {
         this.characters = characters;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void setEnemies(ArrayList<Enemy> enemies) {
+        this.enemies = enemies;
     }
 
     public boolean isLighted() {
@@ -162,5 +175,13 @@ public class Room extends SugarRecord<Room>{
 
     public void setmRoomIsDarkDesc(String mRoomIsDarkDesc) {
         this.mRoomIsDarkDesc = mRoomIsDarkDesc;
+    }
+
+    public boolean getHasLightSwitch() {
+        return hasLightSwitch;
+    }
+
+    public void setHasLightSwitch(boolean hasLightSwitch) {
+        this.hasLightSwitch = hasLightSwitch;
     }
 }

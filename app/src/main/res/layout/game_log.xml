@@ -3,17 +3,21 @@
     android:id="@+id/game_log_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="400dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:maxLines="14"
-        android:scrollbars="vertical"
-        android:id="@+id/game_output_view"
-        android:textStyle="italic"
-        android:textSize="30dp"
-        android:layout_gravity="bottom"
+    <ScrollView
+        android:id="@+id/game_log_scroller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"/>
+        android:layout_height="400dp"
+        android:background="@android:color/darker_gray">
+        <TextView
+            android:scrollbars="vertical"
+            android:id="@+id/game_output_view"
+            android:textStyle="italic"
+            android:textSize="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        </ScrollView>
+
 
 </LinearLayout>

@@ -36,7 +36,7 @@
                 [
                     {
                         "Item_name":"Light switch",
-                        "Item_type":"Furniture",
+                        "Item_type":"Switch",
                         "Item_desc":"A simple light switch",
                         "Damage":"0",
                         "Capacity":"0"

@@ -17,8 +17,7 @@ import java.io.InputStream;
  */
 public class Item extends SugarRecord<Item>{
 
-    private String itemName;
-
+    private String ItemName;
     private boolean isInventoryItem;
     private boolean isWeapon;
     private boolean isContainer;
@@ -39,13 +38,14 @@ public class Item extends SugarRecord<Item>{
             JSONArray jsonArray = obj.getJSONArray("Items");
             for (int i=0; i < jsonArray.length();i++){
                 itemObj = jsonArray.getJSONObject(i);
-                itemName = itemObj.getJSONArray(nameToGet).getJSONObject(0).getString("Item_name");
-                Log.d("TAG", "Item name is "+itemName);
+                ItemName = itemObj.getJSONArray(nameToGet).getJSONObject(0).getString("Item_name");
+                ItemType = itemObj.getJSONArray(nameToGet).getJSONObject(0).getString("Item_type");
+                Log.d("TAG", "Item name is "+ItemName);
+                Log.d("TAG", "Item type is "+ItemType);
             }
         }catch (JSONException e){
             e.printStackTrace();
         }
-        ItemType = "Furniture";
         if (ItemType.equalsIgnoreCase("Furniture")){
             isContainer = false;
             isInventoryItem = false;
@@ -77,15 +77,19 @@ public class Item extends SugarRecord<Item>{
             isWeapon = false;
             isSwitch = false;
         }else if(ItemType.equalsIgnoreCase("Switch")){
-            isContainer = true;
-            isInventoryItem = true;
+            isContainer = false;
+            isInventoryItem = false;
             isFurniture = false;
             isWeapon = false;
             isSwitch = true;
         }
+
         damage = damageIn;
         capacity = capacityIn;
     }
+
+
+
     public String loadJSONFromAsset(Context context,String jsonFile){
         String json = null;
         try{
@@ -104,11 +108,11 @@ public class Item extends SugarRecord<Item>{
     }
 
     public String getItemName() {
-        return itemName;
+        return ItemName;
     }
 
     public void setItemName(String itemName) {
-        this.itemName = itemName;
+        this.ItemName = itemName;
     }
 
     public boolean isInventoryItem() {

@@ -42,10 +42,10 @@ public class CharacterCreateActivity extends Activity {
     private Button startGameButton;
     private EditText nameInput;
     private TextView hitPoints;
-    private Character character;
+    private Character player;
     private Intent intent;
 
-
+    private int level;
     private int intelligence;
     private int wisdom;
     private int strength;
@@ -144,18 +144,16 @@ public class CharacterCreateActivity extends Activity {
     }
 
     public void saveCharacter(){
-        character = new Character(nameInput.getText().toString(),
+        level = 1;
+        player = new Character(nameInput.getText().toString(), level,
                 strength,
                 intelligence,
                 dexterity,
                 wisdom,
                 constitution,
-                playerClassSpinner.getSelectedItem().toString(),
-                hp,
-                mana,false);
-        character.setExp(0);
-        character.setLevel(0);
-        character.save();
+                playerClassSpinner.getSelectedItem().toString());
+
+        player.save();
 
     }
 
@@ -203,6 +201,7 @@ public class CharacterCreateActivity extends Activity {
         args.putInt("str", strength);
         args.putInt("dex", dexterity);
         args.putInt("con", constitution);
+        args.putInt("lev", level);
         args.putInt("hp",hp);
         args.putInt("mana",mana);
 
