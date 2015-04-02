@@ -46,43 +46,43 @@ public class Item extends SugarRecord<Item>{
         }catch (JSONException e){
             e.printStackTrace();
         }
-        if (ItemType.equalsIgnoreCase("Furniture")){
-            isContainer = false;
-            isInventoryItem = false;
-            isFurniture = true;
-            isWeapon = false;
-            isSwitch = false;
-        }else if(ItemType.equalsIgnoreCase("Armor")){
-            isContainer = false;
-            isInventoryItem = true;
-            isFurniture = false;
-            isWeapon = false;
-            isSwitch = false;
-        }else if(ItemType.equalsIgnoreCase("Weapon")){
-            isContainer = false;
-            isInventoryItem = true;
-            isFurniture = false;
-            isWeapon = true;
-            isSwitch = false;
-        }else if(ItemType.equalsIgnoreCase("Food")){
-            isContainer = false;
-            isInventoryItem = true;
-            isFurniture = false;
-            isWeapon = false;
-            isSwitch = false;
-        }else if(ItemType.equalsIgnoreCase("Container")){
-            isContainer = true;
-            isInventoryItem = true;
-            isFurniture = false;
-            isWeapon = false;
-            isSwitch = false;
-        }else if(ItemType.equalsIgnoreCase("Switch")){
-            isContainer = false;
-            isInventoryItem = false;
-            isFurniture = false;
-            isWeapon = false;
-            isSwitch = true;
-        }
+//        if (ItemType.equalsIgnoreCase("Furniture")){
+//            isContainer = false;
+//            isInventoryItem = false;
+//            isFurniture = true;
+//            isWeapon = false;
+//            isSwitch = false;
+//        }else if(ItemType.equalsIgnoreCase("Armor")){
+//            isContainer = false;
+//            isInventoryItem = true;
+//            isFurniture = false;
+//            isWeapon = false;
+//            isSwitch = false;
+//        }else if(ItemType.equalsIgnoreCase("Weapon")){
+//            isContainer = false;
+//            isInventoryItem = true;
+//            isFurniture = false;
+//            isWeapon = true;
+//            isSwitch = false;
+//        }else if(ItemType.equalsIgnoreCase("Food")){
+//            isContainer = false;
+//            isInventoryItem = true;
+//            isFurniture = false;
+//            isWeapon = false;
+//            isSwitch = false;
+//        }else if(ItemType.equalsIgnoreCase("Container")){
+//            isContainer = true;
+//            isInventoryItem = true;
+//            isFurniture = false;
+//            isWeapon = false;
+//            isSwitch = false;
+//        }else if(ItemType.equalsIgnoreCase("Switch")){
+//            isContainer = false;
+//            isInventoryItem = false;
+//            isFurniture = false;
+//            isWeapon = false;
+//            isSwitch = true;
+//        }
 
         damage = damageIn;
         capacity = capacityIn;

@@ -32,6 +32,7 @@ public class Room extends SugarRecord<Room>{
     private Room prevRoom;
     private Room nextRoom;
     private Context mContext;
+    private Switch lightSwitch;
     public Room(){}
     //TODO: finish JSONLoader util class
     public Room( String title,String room, int roomIDIn,boolean isLightedIn, Context contextIn){
@@ -165,6 +166,14 @@ public class Room extends SugarRecord<Room>{
         this.mRoomIsLightedDesc = mRoomIsLightedDesc;
     }
 
+    public Switch getLightSwitch() {
+        return lightSwitch;
+    }
+
+    public void setLightSwitch(Switch lightSwitch) {
+        this.lightSwitch = lightSwitch;
+    }
+
     public String getmRoomIsLightedDesc() {
         return mRoomIsLightedDesc;
     }
@@ -175,13 +184,5 @@ public class Room extends SugarRecord<Room>{
 
     public void setmRoomIsDarkDesc(String mRoomIsDarkDesc) {
         this.mRoomIsDarkDesc = mRoomIsDarkDesc;
-    }
-
-    public boolean getHasLightSwitch() {
-        return hasLightSwitch;
-    }
-
-    public void setHasLightSwitch(boolean hasLightSwitch) {
-        this.hasLightSwitch = hasLightSwitch;
     }
 }
