@@ -4,10 +4,9 @@
 package com.example.m1027519.textroleplayinggame;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,23 +15,28 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import models.*;
 import models.Character;
+import views.MapTileView;
 
 
 public class StartGame extends Activity {
@@ -69,6 +73,12 @@ public class StartGame extends Activity {
     private Room kitchen;
     private Room livingRoom;
     private Room diningRoom;
+
+    private views.MapTileView entranceTile;
+    private views.MapTileView hallwayTile;
+    private views.MapTileView kitchenTile;
+    private views.MapTileView diningroomTile;
+    private views.MapTileView livingroomTile;
 
     private Handler handler;
     private Enemy enemy;
@@ -130,11 +140,11 @@ public class StartGame extends Activity {
         player = new Character(name,1,constitution,intelligence,wisdom,strength,dexterity,profession);//get args from bundle
         player.setCurrentRoom(entrance);
         player.getCurrentRoom().getCharacters().add(player);
-
+        showCurrentRoomInMiniMap();
         //Set starting inventory
         backpack = new Container(this,"Backpack");
-        sword = new Weapon("Sword",10,this);
-
+        sword = new Weapon("Machete",10,this);
+        Log.d("TAG","Sword desc" + sword.getItemDesc());
         player.getItemsInInv().add(backpack);
         player.getItemsInInv().add(sword);
 
@@ -155,6 +165,8 @@ public class StartGame extends Activity {
         allItems.add(sword);
         allItems.add(Light_switch);
         actions = new Actions(player,this,allItems);
+
+
     }
 
     /**
@@ -270,6 +282,14 @@ public class StartGame extends Activity {
      *
      */
     public void createMap(){
+
+        entranceTile = (MapTileView)findViewById(R.id.entrance_tile);
+        hallwayTile = (MapTileView)findViewById(R.id.hallway_tile);
+        kitchenTile = (MapTileView)findViewById(R.id.kitchen_tile);
+        diningroomTile = (MapTileView)findViewById(R.id.diningroom_tile);
+        livingroomTile = (MapTileView)findViewById(R.id.livingroom_tile);
+
+
         entrance.setNextRoom(hallway);
         entrance.setPrevRoom(null);
         entrance.setRightRoom(null);
@@ -286,10 +306,15 @@ public class StartGame extends Activity {
         kitchen.setLeftRoom(hallway);
         kitchen.setRightRoom(null);
 
-        diningRoom.setRightRoom(null);
+        diningRoom.setRightRoom(livingRoom);
         diningRoom.setPrevRoom(kitchen);
         diningRoom.setNextRoom(null);
         diningRoom.setLeftRoom(null);
+
+        livingRoom.setLeftRoom(diningRoom);
+        livingRoom.setPrevRoom(null);
+        livingRoom.setNextRoom(null);
+        livingRoom.setRightRoom(null);
     }
 
     /**
@@ -299,7 +324,6 @@ public class StartGame extends Activity {
         Light_switch = new Switch(false,getApplicationContext());
         entrance = new Room("Entrance", "Entrance",0,false,getApplicationContext());
         entrance.setLightSwitch(Light_switch);
-
         hallway = new Room("Hall Way","Main_Hallway",1,false,getApplicationContext());
         kitchen = new Room("Kitchen", "Kitchen",2,false,getApplicationContext());
         livingRoom = new Room("Living Room","Living_Room",3,false,getApplicationContext());
@@ -390,6 +414,7 @@ public class StartGame extends Activity {
             character.setCurrentRoom(current.getLeftRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
+            showCurrentRoomInMiniMap();
             lookAround();
         }else{
             lookAround();
@@ -407,6 +432,7 @@ public class StartGame extends Activity {
             character.setCurrentRoom(current.getRightRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
+            showCurrentRoomInMiniMap();
             lookAround();
         }else{
             lookAround();
@@ -425,6 +451,7 @@ public class StartGame extends Activity {
             character.setCurrentRoom(current.getNextRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
+            showCurrentRoomInMiniMap();
             lookAround();
         }else{
             lookAround();
@@ -443,6 +470,7 @@ public class StartGame extends Activity {
             character.setCurrentRoom(current.getPrevRoom());
             current = character.getCurrentRoom();
             current.getCharacters().add(character);
+            showCurrentRoomInMiniMap();
             lookAround();
         }else{
             lookAround();
@@ -450,7 +478,26 @@ public class StartGame extends Activity {
         }
     }
 
+    public void showCurrentRoomInMiniMap(){
+        entranceTile.setBackgroundColor(Color.WHITE);
+        hallwayTile.setBackgroundColor(Color.WHITE);
+        kitchenTile.setBackgroundColor(Color.WHITE);
+        diningroomTile.setBackgroundColor(Color.WHITE);
+        livingroomTile.setBackgroundColor(Color.WHITE);
+        Room room = player.getCurrentRoom();
 
+        if (room.getmTitle().equalsIgnoreCase("Entrance")){
+            entranceTile.setBackgroundColor(Color.RED);
+        }else if (room.getmTitle().equalsIgnoreCase("Hall Way")){
+            hallwayTile.setBackgroundColor(Color.RED);
+        }else if (room.getmTitle().equalsIgnoreCase("Kitchen")){
+            kitchenTile.setBackgroundColor(Color.RED);
+        }else if (room.getmTitle().equalsIgnoreCase("Living Room")){
+            livingroomTile.setBackgroundColor(Color.RED);
+        }else if (room.getmTitle().equalsIgnoreCase("Dining Room")){
+            diningroomTile.setBackgroundColor(Color.RED);
+        }
+    }
     /**
      *
      */

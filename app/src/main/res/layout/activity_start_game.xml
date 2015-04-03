@@ -85,7 +85,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/look_button_label"/>
         </TableRow>
-
+        <include layout="@layout/mini_map"
+            android:id="@+id/mini_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/action_button_table"/>
     </TableLayout>
+
+
+
+
 
 </RelativeLayout>

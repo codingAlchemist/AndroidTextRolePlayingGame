@@ -38,6 +38,7 @@ public class Actions {
         stringBuilder = stringBuilder.append(thing);
         String target = stringBuilder.substring(6,stringBuilder.length());
         for (Item item : items){
+            Log.d("TAG", "item names are "+item.getItemName());
             if (target.equalsIgnoreCase(item.getItemName())){
                 Log.d("TAG","Desc is "+item.getItemDesc());
                 return item.getItemDesc();
