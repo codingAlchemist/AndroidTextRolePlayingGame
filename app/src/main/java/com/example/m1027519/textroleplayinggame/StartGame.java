@@ -188,7 +188,7 @@ public class StartGame extends Activity {
      * @param command
      */
     public void doActionFOrCommandString(String command){
-        actions.LookAt(command);
+        //actions.LookAt(command);
 //        if (command.equalsIgnoreCase("look")){
 //            lookAround();
 //
@@ -393,7 +393,8 @@ public class StartGame extends Activity {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     dismissKeyboard();
                     inputCommandText = gameInputField.getText().toString();
-                    doActionFOrCommandString(inputCommandText);
+                    showUpdatedContent(actions.getActionCommand(inputCommandText));
+                    //doActionFOrCommandString(inputCommandText);
                     Log.d(TAG,inputCommandText);
                     gameInputField.setText("");
                     return true;
