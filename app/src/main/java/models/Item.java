@@ -29,6 +29,8 @@ public class Item extends SugarRecord<Item>{
     private String itemDesc;
     private int damage;
     private int capacity;
+    private String shortDesc;
+    private String longDesc;
 
     public Item(String nameToGet, Integer damageIn,Integer capacityIn, Context context){
         mContext = context;
@@ -46,50 +48,19 @@ public class Item extends SugarRecord<Item>{
         }catch (JSONException e){
             e.printStackTrace();
         }
-//        if (ItemType.equalsIgnoreCase("Furniture")){
-//            isContainer = false;
-//            isInventoryItem = false;
-//            isFurniture = true;
-//            isWeapon = false;
-//            isSwitch = false;
-//        }else if(ItemType.equalsIgnoreCase("Armor")){
-//            isContainer = false;
-//            isInventoryItem = true;
-//            isFurniture = false;
-//            isWeapon = false;
-//            isSwitch = false;
-//        }else if(ItemType.equalsIgnoreCase("Weapon")){
-//            isContainer = false;
-//            isInventoryItem = true;
-//            isFurniture = false;
-//            isWeapon = true;
-//            isSwitch = false;
-//        }else if(ItemType.equalsIgnoreCase("Food")){
-//            isContainer = false;
-//            isInventoryItem = true;
-//            isFurniture = false;
-//            isWeapon = false;
-//            isSwitch = false;
-//        }else if(ItemType.equalsIgnoreCase("Container")){
-//            isContainer = true;
-//            isInventoryItem = true;
-//            isFurniture = false;
-//            isWeapon = false;
-//            isSwitch = false;
-//        }else if(ItemType.equalsIgnoreCase("Switch")){
-//            isContainer = false;
-//            isInventoryItem = false;
-//            isFurniture = false;
-//            isWeapon = false;
-//            isSwitch = true;
-//        }
 
         damage = damageIn;
         capacity = capacityIn;
     }
 
 
-
+    public Item(String nameToGet, Integer damageIn,Integer capacityIn, Context context,String sDesc){
+        mContext = context;
+        damage = damageIn;
+        capacity = capacityIn;
+        shortDesc = sDesc;
+        ItemName = nameToGet;
+    }
     public String loadJSONFromAsset(Context context,String jsonFile){
         String json = null;
         try{
@@ -185,5 +156,21 @@ public class Item extends SugarRecord<Item>{
 
     public void setSwitch(boolean isSwitch) {
         this.isSwitch = isSwitch;
+    }
+
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
+
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
     }
 }

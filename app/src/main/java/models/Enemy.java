@@ -9,6 +9,7 @@ import java.util.Random;
  */
 public class Enemy extends Character {
     private Integer hp, mana, level;
+    private String mDescription;
     public Enemy(String nameIn, Integer levelIn, Integer strengthIn, Integer intelligenceIn,Integer dexterityIn, Integer wisdomIn, Integer constitutionIn, String playerClassIn){
         super(nameIn,levelIn,strengthIn,intelligenceIn,dexterityIn,wisdomIn,constitutionIn,playerClassIn);
     }
@@ -135,4 +136,11 @@ public class Enemy extends Character {
         return actionString;
     }
 
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
 }

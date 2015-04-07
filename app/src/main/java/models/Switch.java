@@ -8,8 +8,8 @@ import android.content.Context;
 public class Switch extends Item {
     private boolean on;
     private Context mContext;
-    public Switch(boolean on, Context context) {
-        super("Light Switch",0,0,context);
+    public Switch(boolean on, Context context,String shortDesc) {
+        super("Light Switch",0,0,context,shortDesc);
         this.mContext = context;
         this.on = on;
     }

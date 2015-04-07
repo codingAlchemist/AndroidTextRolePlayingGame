@@ -9,8 +9,8 @@ import java.util.ArrayList;
  */
 public class Container extends Item{
     private ArrayList<Item> items;
-    public Container(Context context,String name){
-        super(name,0,0,context);
+    public Container(Context context,String name,String shortDescIn){
+        super(name,0,0,context,shortDescIn);
     }
 
     public ArrayList<Item> getItems() {

@@ -3,6 +3,7 @@ package models;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -11,11 +12,9 @@ import java.util.ArrayList;
  */
 public class Actions {
     private final String TAG = getClass().getSimpleName();
-    private Character player;
     private Context mContext;
     private ArrayList<Item> items;
-    public Actions(Character characterIn, Context context, ArrayList<Item>itemsIn){
-        player = characterIn;
+    public Actions(Context context, ArrayList<Item>itemsIn){
         mContext = context;
         items = itemsIn;
     }
@@ -55,15 +54,17 @@ public class Actions {
             theSwitch.setOn(true);
         }
     }
-    public String getActionCommand(String command){
-        String output = null;
+    public String getActionCommand(String command,Character player){
+        String output = "";
         StringBuilder stringBuilder = new StringBuilder(output);
         if (command.equalsIgnoreCase("Look")||command.equalsIgnoreCase("Look around")){
-            stringBuilder.append(lookAround());
+            Log.d(TAG,"Looking around");
+            stringBuilder.append(lookAround(player));
             return output;
         }
 
         if (command.equalsIgnoreCase("flip switch")||command.equalsIgnoreCase("turn on switch")){
+            Log.d(TAG,"flipping on switch");
             Room room = player.getCurrentRoom();
             if (room.getLightSwitch() != null){
                 Switch currentSwitch = room.getLightSwitch();
@@ -76,7 +77,7 @@ public class Actions {
     /**
      *
      */
-    public String lookAround(){
+    public String lookAround(Character player){
         Room current = player.getCurrentRoom();
         String status = current.isLighted() ? "isLighted" : "Not lighted";
         Log.d("TAG","Current is "+ status);
@@ -96,21 +97,17 @@ public class Actions {
             stringBuilder.append("There is a light switch here and it is "+switchState+"\n");
         }
         Log.d("TAG", "num enemies"+current.getEnemies().size());
-        showEnemies();
+        showEnemies(current);
         return output;
     }
     /**
      *
      */
-    public void showEnemies(){
-        Room current = player.getCurrentRoom();
-//        if (current.getEnemies().size() > 0){
-//            hitButton.setVisibility(View.VISIBLE);
-//            for (int i=0; i < current.getEnemies().size(); i++){
-//                showUpdatedContent(current.getCharacters().get(i).getName()+" is here");
-//            }
-//        }else{
-//            hitButton.setVisibility(View.INVISIBLE);
-//        }
+    public ArrayList<Enemy> showEnemies(Room current){
+        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+        for (int i=0; i < current.getEnemies().size(); i++){
+            enemies.add(current.getEnemies().get(i));
+        }
+        return enemies;
     }
 }

@@ -7,8 +7,8 @@ import android.content.Context;
  */
 public class Weapon extends Item {
 
-    public Weapon(String name,Integer damage,Context context){
-        super(name,damage,0,context);
+    public Weapon(String name,Integer damage,Context context,String shortDesc){
+        super(name,damage,0,context,shortDesc);
     }
 
 

@@ -4,7 +4,9 @@
 package com.example.m1027519.textroleplayinggame;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -88,11 +90,11 @@ public class StartGame extends Activity {
     private Weapon sword;
     //private Enemy enemy2;
 
-    private Actions actions;
     private String gameInput;
     private Switch Light_switch;
 
-
+    private ArrayList<Enemy> enemies;
+    private ArrayList<Item> items;
 
     public static enum HitPhrases{
         MISS,
@@ -110,8 +112,11 @@ public class StartGame extends Activity {
         setContentView(R.layout.activity_start_game);
         Intent intent = getIntent();
         intent.getExtras();
+        name = "jason";
         name = intent.getStringExtra("char_name");
         Log.d(TAG,"Name: "+name);
+        enemies = new ArrayList<Enemy>();
+        items = new ArrayList<Item>();
         List<Character> list = Character.findWithQuery(Character.class, "Select * from Character where name = ?",name);
 
         for (int i=0; i < list.size(); i++){
@@ -131,10 +136,9 @@ public class StartGame extends Activity {
         gameInputField.setText("");
         gameOutput = (TextView)findViewById(R.id.game_output_view);
         handler = new Handler();
-        initRooms();
 
-        //Initial message to user
-        gameOutput.setText("Welcome " + name + ".\n" + "You are going to help me tell my story." + "\n" + entrance.getmDesc());
+
+        initRooms();
 
         //Create character and set the starting room
         player = new Character(name,1,constitution,intelligence,wisdom,strength,dexterity,profession);//get args from bundle
@@ -142,13 +146,12 @@ public class StartGame extends Activity {
         player.getCurrentRoom().getCharacters().add(player);
         showCurrentRoomInMiniMap();
         //Set starting inventory
-        backpack = new Container(this,"Backpack");
-        sword = new Weapon("Machete",10,this);
-        Log.d("TAG","Sword desc" + sword.getItemDesc());
-        player.getItemsInInv().add(backpack);
-        player.getItemsInInv().add(sword);
+
 
         initButtonActions();
+
+        //Initial message to user
+        gameOutput.setText("Welcome " + name + ".\n" + "You are going to help me tell my story." + "\n" + entrance.getmDesc());
 
         //Set timer to start AI
         timer = new Timer();
@@ -156,25 +159,35 @@ public class StartGame extends Activity {
             @Override
             public void run() {
                CustomAsyncTask enemyMoveTask = new CustomAsyncTask();
-               enemyMoveTask.execute();
+               //enemyMoveTask.execute();
             }
         },1000,5000);
-
-        ArrayList<Item> allItems = new ArrayList<Item>();
-        allItems.add(backpack);
-        allItems.add(sword);
-        allItems.add(Light_switch);
-        actions = new Actions(player,this,allItems);
-
-
+    }
+    /*****************************************Overrides************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_start_game, menu);
+        return true;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getGameInput(){
-        return gameInput;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
     }
 
     @Override
@@ -183,54 +196,90 @@ public class StartGame extends Activity {
         timer.cancel();
     }
 
+    /********************************Actions******************************/
+
     /**
-     *
+     * Method: doActionFOrCommandString
      * @param command
      */
     public void doActionFOrCommandString(String command){
-        //actions.LookAt(command);
-//        if (command.equalsIgnoreCase("look")){
-//            lookAround();
-//
-//        }else if (command.equalsIgnoreCase("flip switch") || (command.equalsIgnoreCase("turn on switch"))){
-//            Log.d("TAG", "flipping switch");
-//            Room current = player.getCurrentRoom();
-//            if (current.getLightSwitch() != null){
-//                if (!current.getLightSwitch().getIsOn()){
-//                    current.setLighted(true);
-//                    current.getLightSwitch().setOn(true);
-//                    showUpdatedContent("Turned on light switch");
-//                    showUpdatedContent(current.getmDesc());
-//                    Log.d("TAG", "turning on switch");
-//                }else{
-//                    current.setLighted(false);
-//                    current.getLightSwitch().setOn(false);
-//                    showUpdatedContent(current.getmDesc());
-//                    showUpdatedContent("Turned off light switch");
-//                    Log.d("TAG", "turning off switch");
-//                }
-//            }else{
-//                showUpdatedContent("There is no light switch here");
-//            }
-//        }else if(command.equalsIgnoreCase("look at")){
-//            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-//            alertBuilder.setTitle("Look at what?");
-//            View alertView = new View(this);
-//            alertBuilder.setNegativeButton("Done", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            }).setPositiveButton("Ok",new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            }).create();
-//            alertBuilder.show();
-//        }else{
-//            showUpdatedContent("Current commands are 'flip switch' or 'turn on switch' ");
-//        }
+        Room current = player.getCurrentRoom();
+        StringBuilder stringBuilder = new StringBuilder(command);
+        String target = "";
+        String lookAtString = "";
+        if (!command.isEmpty()){
+            if (command.length() >= 7){
+                lookAtString = stringBuilder.substring(0,7);
+            }
+            if (command.length() >= 8){
+                target = stringBuilder.substring(8);
+            }
+        }
+
+        if (command.equalsIgnoreCase("look")){
+            lookAround();
+
+        }else if (command.equalsIgnoreCase("flip switch") || (command.equalsIgnoreCase("turn on switch"))){
+            Log.d("TAG", "flipping switch");
+            flipSwitch();
+
+        }else if(lookAtString.equalsIgnoreCase("look at")){
+            lookAt(target);
+        }else if (stringBuilder.substring(0).equalsIgnoreCase("i")){
+            getInventoryForCharacter();
+        }else if (command.equalsIgnoreCase("help")){
+            showUpdatedContent("Current commands are 'flip switch','turn on switch','look',look around','look at [object]");
+        }
+    }
+
+    public void lookAt(String target){
+        Room current = player.getCurrentRoom();
+        if (current.getItems().size() > 0){
+            for (Item item : current.getItems()){
+                if (target.equalsIgnoreCase(item.getItemName())){
+                    showUpdatedContent("The "+item.getItemName()+" is a "+item.getShortDesc());
+                }
+            }
+        }else if(player.getItemsInInv().size() > 0){
+            for (Item item : current.getItems()){
+                if (target.equalsIgnoreCase(item.getItemName())){
+                    showUpdatedContent("The "+item.getItemName()+" is a "+item.getShortDesc());
+                }
+            }
+        }else{
+            showUpdatedContent("There are no items to look at in here");
+        }
+    }
+
+    public void flipSwitch(){
+        Room current = player.getCurrentRoom();
+        if (current.getLightSwitch() != null){
+            if (!current.getLightSwitch().getIsOn()){
+                current.setLighted(true);
+                current.getLightSwitch().setOn(true);
+                showUpdatedContent("Turned on light switch");
+                showUpdatedContent(current.getmDesc());
+                Log.d("TAG", "turning on switch");
+            }else{
+                current.setLighted(false);
+                current.getLightSwitch().setOn(false);
+                showUpdatedContent(current.getmDesc());
+                showUpdatedContent("Turned off light switch");
+                Log.d("TAG", "turning off switch");
+            }
+        }else{
+            showUpdatedContent("There is no light switch here");
+        }
+    }
+
+    public void getInventoryForCharacter(){
+        if (player.getItemsInInv().size() > 0){
+            for(Item item : player.getItemsInInv()){
+                showUpdatedContent("You are carrying "+item.getItemName());
+            }
+        }else{
+            showUpdatedContent("You aren't carrying anything");
+        }
     }
 
     /**
@@ -255,12 +304,12 @@ public class StartGame extends Activity {
                 String switchState = theSwitch.getIsOn()?"on":"off";
                 showUpdatedContent("There is a light switch here and it is "+switchState);
             }
+            showUpdatedContent("A " + current.getItems().get(i).getItemName() + " is in here.");
         }
         if (current.getLightSwitch()!=null){
             String switchState = current.getLightSwitch().getIsOn()?"on":"off";
             showUpdatedContent("There is a light switch here and it is "+switchState);
         }
-        Log.d("TAG", "num enemies"+current.getEnemies().size());
         showEnemies();
     }
     /**
@@ -278,6 +327,7 @@ public class StartGame extends Activity {
         }
     }
 
+    /*******************************Set up Methods************************************/
     /**
      *
      */
@@ -321,30 +371,27 @@ public class StartGame extends Activity {
      *
      */
     public void initRooms(){
-        Light_switch = new Switch(false,getApplicationContext());
+        backpack = new Container(this,"Backpack","Old beaten up pack");
+        sword = new Weapon("Machete",10,this,"Long sharp machete");
+        Light_switch = new Switch(false,getApplicationContext(),"Simple light switch");
+
         entrance = new Room("Entrance", "Entrance",0,false,getApplicationContext());
         entrance.setLightSwitch(Light_switch);
+        entrance.getItems().add(backpack);
+        entrance.getItems().add(sword);
+
         hallway = new Room("Hall Way","Main_Hallway",1,false,getApplicationContext());
         kitchen = new Room("Kitchen", "Kitchen",2,false,getApplicationContext());
         livingRoom = new Room("Living Room","Living_Room",3,false,getApplicationContext());
         diningRoom = new Room("Dining Room","Dining_Room",4,false,getApplicationContext());
+
+        items.add(backpack);
+        items.add(sword);
+        items.add(Light_switch);
         createMap();
         generateEnemies();
     }
 
-
-    /**
-     *
-     */
-    private void dismissKeyboard() {
-        gameInput = gameInputField.getText().toString();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-    }
-
-    /**
-     *
-     */
     public void initButtonActions(){
         forwardButton = (Button)findViewById(R.id.forward_button);
         forwardButton.setOnClickListener(new View.OnClickListener() {
@@ -390,12 +437,10 @@ public class StartGame extends Activity {
         gameInputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     dismissKeyboard();
                     inputCommandText = gameInputField.getText().toString();
-                    showUpdatedContent(actions.getActionCommand(inputCommandText));
-                    //doActionFOrCommandString(inputCommandText);
-                    Log.d(TAG,inputCommandText);
+                    doActionFOrCommandString(inputCommandText);
                     gameInputField.setText("");
                     return true;
                 }
@@ -403,7 +448,24 @@ public class StartGame extends Activity {
             }
         });
     }
+    /**
+     *
+     */
 
+    public void generateEnemies(){
+        enemy = new Enemy("BadGuy",1,10,10,10,10,10,"BadGuyClass");
+        //enemy2 = new Enemy("BadGuy2",1,10,10,10,10,10,"BadBuyClass");
+        enemy.setmDescription("A crazy looking bald guy");
+        enemy.setCurrentRoom(entrance);
+        //enemy2.setCurrentRoom(kitchen);
+
+        hallway.getEnemies().add(enemy);
+        //kitchen.getEnemies().add(enemy2);
+        enemies.add(enemy);
+    }
+
+
+    /**************************Character navigation****************************/
     /**
      *
      * @param character
@@ -506,31 +568,6 @@ public class StartGame extends Activity {
         showUpdatedContent("You see a wall.");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_start_game, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-    }
 
     /**
      *
@@ -544,21 +581,6 @@ public class StartGame extends Activity {
                 gameOutputScroller.fullScroll(View.FOCUS_DOWN);
             }
         });
-
-    }
-
-    /**
-     *
-     */
-    public void generateEnemies(){
-        enemy = new Enemy("BadGuy",1,10,10,10,10,10,"BadGuyClass");
-        //enemy2 = new Enemy("BadGuy2",1,10,10,10,10,10,"BadBuyClass");
-
-        enemy.setCurrentRoom(hallway);
-        //enemy2.setCurrentRoom(kitchen);
-
-        hallway.getEnemies().add(enemy);
-        //kitchen.getEnemies().add(enemy2);
 
     }
 
@@ -601,8 +623,6 @@ public class StartGame extends Activity {
                 break;
         }
     }
-
-
     /**
      *
      * @param rollHit
@@ -708,6 +728,11 @@ public class StartGame extends Activity {
         }
     }
 
+    private void dismissKeyboard() {
+        gameInput = gameInputField.getText().toString();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
 
 
     /**
@@ -722,8 +747,6 @@ public class StartGame extends Activity {
             prevEnemyRoom = enemy.getCurrentRoom().getmTitle();
             //prevEnemy2Room = enemy2.getCurrentRoom().getmTitle();
 
-            //startEnemyNavigationLogic(enemy);
-            //startEnemyNavigationLogic(enemy2);
             enemy.startEnemyNavigationLogic();
         }
         @Override
